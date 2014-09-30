@@ -1,0 +1,29 @@
+1、ABOUT BFD
+####################
+##Auth:aiping.liang
+##E-Mail: aiping.liang@baifendian.com
+##CopyRight:baifendian
+####################
+
+BFD is a HBase performance test tool. Different with other tool ,this tool can test the history data of yours, which make the result more convincing than others. 
+
+Wanring: BFD only can be used to test random get.
+
+If you want to use this tool test your HBase Performance, you should do:
+  1: Copy a table from your production environment
+  2: Fix meta and ensure the table can be used
+  3: Get a table rokkey list and random it
+  4: USE BFD to test
+
+
+2、How to use BFD
+
+  java -cp bfdHbaseTest.jar:$HBASE_HOME/lib/* bfd.hbase.test.bfdTestHbase 
+  -n 1 //thread number
+  -b GidAction_201401 //table name
+  -e 1000000 // read number for each thread 
+  -r 1 // if you wang to use caching, can set it for caching number
+  -c l_date // cf name
+  -f gidList.txt  // rowkey list
+
+Happy to use
