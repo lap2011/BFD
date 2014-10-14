@@ -51,21 +51,29 @@ public class localClientThread implements Callable{
 		List <Get> allRows = new ArrayList<Get>();
 		for (int j = 0; j < testOptions.requeryCount; j += testOptions.eachTimeGet) {
 			if ( testOptions.eachTimeGet == 1 ){
-				String currentRowKey = getRandomRowKey();
+				String currentRowKey = reverString(getRandomRowKey());
 				System.out.println(Thread.currentThread().getId() + " get rowkey: " + currentRowKey);
 				if (currentRowKey == null ){
 					continue;
 				}
-				Get get = new Get(Bytes.toBytes(reverString(currentRowKey)));
+				Get get = new Get(Bytes.toBytes(currentRowKey));
+				get.setMaxVersions(1);
 				get.addFamily(testOptions.cfName.getBytes());
+				Result result;
 				long start = System.nanoTime();
-				Result result = hTable.get(get);
+				try{
+					result = hTable.get(get);
+				}catch (Exception e) {
+					System.out.println("when get rowkey:"+ currentRowKey + "get exception:"+ e.toString());
+					continue;
+					// TODO: handle exception
+				}
 				execTime += System.nanoTime() - start;
 				if (result.containsColumn(testOptions.cfName.getBytes(), testOptions.qualifiter.getBytes())){
 					System.out.println("Row key:" + currentRowKey + "is not in table");
 				}
 				if (testOptions.showDetail) {
-					System.out.println("get:"+result.toString());
+//					System.out.println("get:"+result.toString());
 //					for (Cell cell : result.rawCells()) {
 //						System.out.println("get row name:"+ new String(CellUtil.cloneRow(cell) + ""));
 //						System.out.println("get time stamp"+ cell.getTimestamp());
